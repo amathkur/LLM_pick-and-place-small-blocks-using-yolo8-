@@ -4,7 +4,6 @@ A complete robotic pick-and-place system combining **YOLOv8 object detection**, 
 
 ![ROS2](https://img.shields.io/badge/ROS2-Humble-blue)
 ![Python](https://img.shields.io/badge/Python-3.10+-green)
-![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ## ✨ Features
 
@@ -321,10 +320,6 @@ dobot_rviz_ws/
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit issues or pull requests.
-
-## 📄 License
-
-This project is licensed under the MIT License.
 
 ---
 
