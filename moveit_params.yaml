@@ -1,0 +1,104 @@
+ros__parameters:
+  kinematics:
+    magician_arm:
+      kinematics_solver: kdl_kinematics_plugin/KDLKinematicsPlugin
+      kinematics_solver_search_resolution: 0.005
+      kinematics_solver_timeout: 0.005
+  robot_description: "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\n<robot\n  name=\"\
+    magician_description\">\n  <link name=\"base_footprint\">\n    <inertial>\n  \
+    \    <origin xyz=\"0 0 0\" rpy=\"0 0 0\"/>\n      <mass value=\"10.0\"/>\n   \
+    \   <inertia ixx=\"1.0\" ixy=\"0.0\" ixz=\"0.0\" iyy=\"1.0\" iyz=\"0.0\" izz=\"\
+    1.0\"/>\n    </inertial>\n  </link>\n  <joint\n    name=\"base_to_base_link\"\n\
+    \    type=\"fixed\">\n    <origin\n      xyz=\"0 0 0\"\n      rpy=\"1.571 0 0\"\
+    \ />\n    <parent\n      link=\"base_footprint\" />\n    <child\n      link=\"\
+    base_link\" />\n  </joint>\n  <link\n    name=\"base_link\">\n    <inertial>\n\
+    \      <origin\n        xyz=\"-0.020063 -6.2161E-05 -0.087986\"\n        rpy=\"\
+    0 0 0\" />\n      <mass\n        value=\"0.30578\" />\n      <inertia\n      \
+    \  ixx=\"0.00071053\"\n        ixy=\"9.9243E-07\"\n        ixz=\"-2.4854E-07\"\
+    \n        iyy=\"0.00073873\"\n        iyz=\"-2.4877E-06\"\n        izz=\"0.0013851\"\
+    \ />\n    </inertial>\n    <visual>\n      <geometry>\n        <box size=\"0.1\
+    \ 0.1 0.1\"/>\n      </geometry>\n    </visual>\n  </link>\n  <link\n    name=\"\
+    shoulder\">\n    <inertial>\n      <origin\n        xyz=\"-0.024675 8.1407E-05\
+    \ 0.01482\"\n        rpy=\"0 0 0\" />\n      <mass\n        value=\"0.2307\" />\n\
+    \      <inertia\n        ixx=\"0.00032472\"\n        ixy=\"-1.3752E-06\"\n   \
+    \     ixz=\"-6.0519E-06\"\n        iyy=\"0.00044936\"\n        iyz=\"3.4523E-08\"\
+    \n        izz=\"0.00065634\" />\n    </inertial>\n  </link>\n  <joint\n    name=\"\
+    joint1\"\n    type=\"revolute\">\n    <origin\n      xyz=\"-0.02 0 -0.02\"\n \
+    \     rpy=\"1.5708 1.5708 0\" />\n    <parent\n      link=\"base_link\" />\n \
+    \   <child\n      link=\"shoulder\" />\n    <axis\n      xyz=\"0 0 1\" />\n  \
+    \  <limit\n      lower=\"-3.14159\"\n      upper=\"3.14159\"\n      effort=\"\
+    100\"\n      velocity=\"1.0\" />\n  </joint>\n  \n  <link\n    name=\"elbow\"\
+    >\n    <inertial>\n      <origin\n        xyz=\"-0.015439 0.00011014 0.07257\"\
+    \n        rpy=\"0 0 0\" />\n      <mass\n        value=\"0.075701\" />\n     \
+    \ <inertia\n        ixx=\"0.00016334\"\n        ixy=\"5.1098E-08\"\n        ixz=\"\
+    -2.1519E-06\"\n        iyy=\"0.00015321\"\n        iyz=\"2.9412E-07\"\n      \
+    \  izz=\"2.175E-05\" />\n    </inertial>\n  </link>\n  <joint\n    name=\"joint2\"\
+    \n    type=\"revolute\">\n    <origin\n      xyz=\"0 0 0\"\n      rpy=\"-3.1416\
+    \ 0 0\" />\n    <parent\n      link=\"shoulder\" />\n    <child\n      link=\"\
+    elbow\" />\n    <axis\n      xyz=\"0 1 0\" />\n    <limit\n      lower=\"-3.14159\"\
+    \n      upper=\"3.14159\"\n      effort=\"100\"\n      velocity=\"1.0\" />\n \
+    \ </joint>\n  \n  <link\n    name=\"wrist\">\n    <inertial>\n      <origin\n\
+    \        xyz=\"0.054676 0.036747 0.1679\"\n        rpy=\"0 0 0\" />\n      <mass\n\
+    \        value=\"0.079987\" />\n      <inertia\n        ixx=\"1.7698E-05\"\n \
+    \       ixy=\"-1.2066E-08\"\n        ixz=\"1.3665E-06\"\n        iyy=\"0.00016288\"\
+    \n        iyz=\"-6.1383E-08\"\n        izz=\"0.00015897\" />\n    </inertial>\n\
+    \  </link>\n  <joint\n    name=\"joint3\"\n    type=\"revolute\">\n    <origin\n\
+    \      xyz=\"-0.025 0 0.17\"\n      rpy=\"0 0 0\" />\n    <parent\n      link=\"\
+    elbow\" />\n    <child\n      link=\"wrist\" />\n    <axis\n      xyz=\"0 1 0\"\
+    \ />\n    <limit\n      lower=\"-3.14159\"\n      upper=\"3.14159\"\n      effort=\"\
+    100\"\n      velocity=\"1.0\" />\n  </joint>\n  \n  <link\n    name=\"wrist_pitch\"\
+    >\n    <inertial>\n      <origin\n        xyz=\"0.19217 -8.6001E-05 0.15972\"\n\
+    \        rpy=\"0 0 0\" />\n      <mass\n        value=\"0.038525\" />\n      <inertia\n\
+    \        ixx=\"5.9393E-06\"\n        ixy=\"2.2172E-08\"\n        ixz=\"-1.3561E-06\"\
+    \n        iyy=\"1.4378E-05\"\n        iyz=\"-1.9867E-08\"\n        izz=\"9.2862E-06\"\
+    \ />\n    </inertial>\n  </link>\n  <joint\n    name=\"joint4\"\n    type=\"revolute\"\
+    >\n    <origin\n      xyz=\"0.19 0 0\"\n      rpy=\"0 0 0\" />\n    <parent\n\
+    \      link=\"wrist\" />\n    <child\n      link=\"wrist_pitch\" />\n    <axis\n\
+    \      xyz=\"0 1 0\" />\n    <limit\n      lower=\"-3.14159\"\n      upper=\"\
+    3.14159\"\n      effort=\"100\"\n      velocity=\"1.0\" />\n  </joint>\n  \n \
+    \ <link\n    name=\"gripper\">\n    <inertial>\n      <origin\n        xyz=\"\
+    -0.0043651 1.1915E-10 -0.01292\"\n        rpy=\"0 0 0\" />\n      <mass\n    \
+    \    value=\"0.028937\" />\n      <inertia\n        ixx=\"4.2325E-06\"\n     \
+    \   ixy=\"-4.7385E-14\"\n        ixz=\"5.6853E-10\"\n        iyy=\"4.2309E-06\"\
+    \n        iyz=\"6.1764E-14\"\n        izz=\"1.0196E-06\" />\n    </inertial>\n\
+    \  </link>\n  <joint\n    name=\"joint5\"\n    type=\"prismatic\">\n    <origin\n\
+    \      xyz=\"0.054 0 -0.05\"\n      rpy=\"0 0 0\" />\n    <parent\n      link=\"\
+    wrist_pitch\" />\n    <child\n      link=\"gripper\" />\n    <axis\n      xyz=\"\
+    0 0 -1\" />\n    <limit\n      lower=\"0\"\n      upper=\"0.1\"\n      effort=\"\
+    100\"\n      velocity=\"0.5\" />\n  </joint>\n</robot>"
+  robot_description_semantic: "<?xml version=\"1.0\" ?>\n<!--This does not replace\
+    \ URDF, and is not an extension of URDF.\n    This is a format for representing\
+    \ semantic information about the robot structure.\n    A URDF file must exist\
+    \ for this robot as well, where the joints and the links that are referenced are\
+    \ defined\n-->\n<robot name=\"magician_description\">\n    <!--GROUPS: Representation\
+    \ of a set of joints and links. This can be useful for specifying DOF to plan\
+    \ for, defining arms, end effectors, etc-->\n    <!--LINKS: When a link is specified,\
+    \ the parent joint of that link (if it exists) is automatically included-->\n\
+    \    <!--JOINTS: When a joint is specified, the child link of that joint (which\
+    \ will always exist) is automatically included-->\n    <!--CHAINS: When a chain\
+    \ is specified, all the links along the chain (including endpoints) are included\
+    \ in the group. Additionally, all the joints that are parents to included links\
+    \ are also included. This means that joints along the chain and the parent joint\
+    \ of the base link are included in the group-->\n    <!--SUBGROUPS: Groups can\
+    \ also be formed by referencing to already defined group names-->\n    <group\
+    \ name=\"magician_arm\">\n        <chain base_link=\"base_link\" tip_link=\"gripper\"\
+    \ />\n    </group>\n    <!--GROUP STATES: Purpose: Define a named state for a\
+    \ particular group, in terms of joint values. This is useful to define states\
+    \ like 'folded arms'-->\n    <group_state name=\"home\" group=\"magician_arm\"\
+    >\n        <joint name=\"joint1\" value=\"0\" />\n        <joint name=\"joint2\"\
+    \ value=\"0\" />\n        <joint name=\"joint3\" value=\"0\" />\n        <joint\
+    \ name=\"joint4\" value=\"0\" />\n        <joint name=\"joint5\" value=\"0\" />\n\
+    \    </group_state>\n    <!--VIRTUAL JOINT: Purpose: this element defines a virtual\
+    \ joint between a robot link and an external frame of reference (considered fixed\
+    \ with respect to the robot)-->\n    <virtual_joint name=\"fixed_base\" type=\"\
+    fixed\" parent_frame=\"world\" child_link=\"base_link\" />\n    <!--DISABLE COLLISIONS:\
+    \ By default it is assumed that any link of the robot could potentially come into\
+    \ collision with any other link in the robot. This tag disables collision checking\
+    \ between a specified pair of links. -->\n    <disable_collisions link1=\"base_link\"\
+    \ link2=\"elbow\" reason=\"Adjacent\" />\n    <disable_collisions link1=\"base_link\"\
+    \ link2=\"shoulder\" reason=\"Adjacent\" />\n    <disable_collisions link1=\"\
+    elbow\" link2=\"shoulder\" reason=\"Adjacent\" />\n    <disable_collisions link1=\"\
+    elbow\" link2=\"wrist\" reason=\"Adjacent\" />\n    <disable_collisions link1=\"\
+    shoulder\" link2=\"wrist\" reason=\"Never\" />\n    <disable_collisions link1=\"\
+    wrist\" link2=\"wrist_pitch\" reason=\"Adjacent\" />\n    <disable_collisions\
+    \ link1=\"wrist_pitch\" link2=\"gripper\" reason=\"Adjacent\" />\n</robot>"

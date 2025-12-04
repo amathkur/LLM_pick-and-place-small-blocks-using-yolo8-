@@ -1,0 +1,202 @@
+╔═══════════════════════════════════════════════════════════════════╗
+║     🔍 YOLO OBJECT DETECTION - COMMAND REFERENCE                 ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+TRAINED MODEL
+-------------
+File: dobot_llm_project/models/yolo_shapes_best.pt
+Classes: 400 (10 shapes × 2 sizes × 20 colors)
+Training: Synthetic dataset with varied lighting, angles, backgrounds
+
+SUPPORTED SHAPES (10)
+---------------------
+✓ cube          - Standard box/cube shape
+✓ cylinder      - Round tall shape
+✓ sphere        - Ball/round shape
+✓ pyramid       - Triangle base with point on top
+✓ cone          - Ice cream cone shape
+✓ prism         - Triangular prism
+✓ hexagon       - 6-sided shape
+✓ star          - Star shape
+✓ disk          - Flat round disk
+✓ torus         - Donut/ring shape
+
+SUPPORTED SIZES (2)
+-------------------
+✓ small         - Smaller objects
+✓ large         - Larger objects
+
+SUPPORTED COLORS (20)
+---------------------
+Primary:
+  red, green, blue, yellow
+
+Secondary:
+  orange, purple, pink, cyan, magenta, lime
+
+Tertiary:
+  navy, teal, maroon, olive, brown, coral,
+  turquoise, violet, indigo, gold
+
+COMMAND EXAMPLES
+----------------
+Basic Pick Commands:
+  "pick small red cube"
+  "pick large blue sphere"
+  "pick green cylinder"
+  "pick yellow pyramid"
+  "pick small orange cone"
+
+Move To Commands:
+  "move to large red cube"
+  "go to small blue sphere"
+  "move to green cylinder"
+
+Partial Matching (works too):
+  "pick red cube"        → Will find any red cube
+  "pick small cube"      → Will find any small cube
+  "move to blue"         → Will find first blue object
+  "go to sphere"         → Will find first sphere
+
+Natural Language (LLM will parse):
+  "can you pick up the small red cube?"
+  "move the arm to the large blue ball"
+  "grab the green cylinder please"
+
+HOW IT WORKS
+------------
+1. Camera (USB camera 2) captures live feed at 30fps
+2. YOLO model processes each frame
+3. Detections published to /yolo/detections topic
+4. LLM controller receives: "👁️ Detected: small_red_cube"
+5. You command: "pick small red cube"
+6. Controller matches keywords: small + red + cube
+7. Robot moves to pre-programmed position for that object
+
+VIEWING DETECTIONS
+------------------
+In Terminal:
+  ros2 topic echo /yolo/detections
+
+In RViz:
+  Add → Camera → Topic: /camera/image_raw
+  Or use Image display with YOLO annotations
+
+Watch Controller Output:
+  Look for: [INFO] [ros2_llm_controller]: 👁️ Detected: small_red_cube
+
+TESTING OBJECT DETECTION
+-------------------------
+1. Place colored object in front of camera
+2. Wait for detection message:
+   [INFO] [ros2_llm_controller]: 👁️ Detected: small_red_cube
+
+3. Command robot:
+   "pick small red cube"
+
+4. Watch for:
+   [INFO] [ros2_llm_controller]: 🎯 Moving to small_red_cube
+   [INFO] [ros2_llm_controller]: ✅ Movement complete!
+
+OBJECT CLASS NAMING
+-------------------
+Format: [size]_[color]_[shape]
+
+Examples:
+  small_red_cube
+  large_blue_sphere
+  small_green_cylinder
+  large_yellow_pyramid
+  small_orange_cone
+  large_purple_prism
+  small_pink_hexagon
+  large_cyan_star
+  small_magenta_disk
+  large_lime_torus
+
+Total combinations: 10 shapes × 2 sizes × 20 colors = 400 classes
+
+MATCHING ALGORITHM
+------------------
+Controller uses word matching to find objects:
+1. Split command into words: ["pick", "small", "red", "cube"]
+2. For each detected object, count matching words
+3. If 2+ words match → target found
+4. If no good match → use first detected object
+
+Examples:
+  Command: "pick small red cube"
+  Detected: "small_red_cube"
+  Match: small(✓) red(✓) cube(✓) = 3 matches → FOUND!
+
+  Command: "pick blue"
+  Detected: "large_blue_sphere"
+  Match: blue(✓) = 1 match (uses first detected if <2)
+
+CAMERA SETUP
+------------
+Camera: USB camera index 2
+Resolution: 640×480
+FPS: 30
+Topic: /camera/image_raw
+Detection Topic: /yolo/detections
+
+Check Camera:
+  ls /dev/video*  (should show video2)
+
+DETECTION PARAMETERS
+--------------------
+Confidence Threshold: 0.25 (default YOLO)
+IOU Threshold: 0.45 (default YOLO)
+Input Size: 320×320 (fast inference)
+
+TROUBLESHOOTING
+---------------
+Issue: No detections
+- Check camera feed in RViz
+- Verify camera connected: ls /dev/video2
+- Check lighting (YOLO trained with varied lighting)
+- Ensure object in camera view
+
+Issue: Wrong object detected
+- Be more specific: "small red cube" vs just "cube"
+- Check multiple objects not confusing detector
+- Ensure good lighting and clear view
+
+Issue: Robot doesn't move to object
+- Check detection message appeared first
+- Verify command matches detected class name
+- Current implementation uses fixed position (not visual servoing)
+
+FUTURE ENHANCEMENTS
+-------------------
+☐ Calculate actual 3D position from camera data
+☐ Add visual servoing for precise pickup
+☐ Implement grasp planning based on shape
+☐ Add object tracking across frames
+☐ Support "move left of the red cube" spatial commands
+
+EXAMPLE WORKFLOW
+----------------
+1. Start system:
+   Terminal 1: ros2 launch launch/moveit_demo.launch.py
+   Terminal 2: python3 dobot_llm_project/ros2_llm_controller.py
+
+2. Place small red cube in camera view
+
+3. Wait for detection:
+   [INFO] 👁️ Detected: small_red_cube
+
+4. Command:
+   "pick small red cube"
+
+5. Observe:
+   [INFO] 🎯 Moving to small_red_cube
+   [INFO] ✅ Movement complete!
+
+6. Robot moves to object position!
+
+╔═══════════════════════════════════════════════════════════════════╗
+║  ✅ 400 object classes ready for detection and manipulation!     ║
+║  🎯 Just say the size, color, and shape - robot will find it!   ║
+╚═══════════════════════════════════════════════════════════════════╝
