@@ -17,6 +17,7 @@ A complete robotic pick-and-place system integrating **YOLOv8 object detection**
 - [Prerequisites](#-prerequisites)
 - [Installation](#-installation)
 - [Quick Start](#-quick-start)
+- [Gemini LLM Commander](#-gemini-llm-commander---how-it-works)
 - [System Components](#-system-components)
 - [Usage](#-usage)
 - [Object Detection](#-object-detection)
@@ -123,6 +124,135 @@ Choose mode: `1` for Text or `2` for Voice
 "can you grab that blue sphere?"
 "stack small yellow on large green"
 "move the arm to the cylinder"
+```
+
+## 🧠 Gemini LLM Commander - How It Works
+
+The system uses **Google Gemini AI** (gemini-2.0-flash model) to interpret natural language commands and convert them into robot actions. Here's a detailed breakdown of all situations where the LLM commander is used:
+
+### Step-by-Step Flow
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  STEP 1: User Input                                                 │
+│  ─────────────────                                                  │
+│  User speaks or types a command like "pick the red cube"           │
+│  → Voice input uses SpeechRecognition + Google Speech API          │
+│  → Text input goes directly to the command processor               │
+└─────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────┐
+│  STEP 2: Gemini API Processing                                     │
+│  ────────────────────────────                                       │
+│  The natural language command is sent to Gemini with a system      │
+│  prompt that explains the robot's capabilities and expected        │
+│  JSON response format.                                              │
+│                                                                     │
+│  API Endpoint: generativelanguage.googleapis.com/v1beta/models/    │
+│                gemini-2.0-flash:generateContent                    │
+└─────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────┐
+│  STEP 3: Command Interpretation                                     │
+│  ────────────────────────────                                       │
+│  Gemini returns a JSON response like:                              │
+│  {"action": "pick_object", "parameters": {"size": "small",         │
+│   "color": "red", "type": "cube"}}                                 │
+└─────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌─────────────────────────────────────────────────────────────────────┐
+│  STEP 4: Robot Execution                                           │
+│  ─────────────────────                                             │
+│  The parsed command triggers the appropriate robot action:         │
+│  - MoveIt motion planning (if available)                           │
+│  - Direct joint control (fallback)                                  │
+│  - YOLO detection for object localization                          │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Situations Where Gemini LLM Commander is Used
+
+#### 1. Movement Commands
+Gemini interprets directional movement commands and converts them to pose changes in the robot's base coordinate frame:
+
+> **Coordinate Frame Reference**: All movements are relative to the robot's base_link frame where:
+> - **+X** = Forward (away from robot base)
+> - **+Y** = Left (from robot's perspective)
+> - **+Z** = Up (vertical)
+
+| User Says | Gemini Interprets | Robot Action |
+|-----------|-------------------|--------------|
+| "move up 3 cm" | `{"action": "move_to_pose", "parameters": {"x": 0.0, "y": 0.0, "z": 0.03}}` | Move Z +0.03m (upward) |
+| "go down 2 cm" | `{"action": "move_to_pose", "parameters": {"x": 0.0, "y": 0.0, "z": -0.02}}` | Move Z -0.02m (downward) |
+| "move left 5 cm" | `{"action": "move_to_pose", "parameters": {"x": 0.0, "y": 0.05, "z": 0.0}}` | Move Y +0.05m (robot's left) |
+| "go right 1 cm" | `{"action": "move_to_pose", "parameters": {"x": 0.0, "y": -0.01, "z": 0.0}}` | Move Y -0.01m (robot's right) |
+
+#### 2. Object Picking with YOLO Detection
+Gemini parses object descriptions and the system uses YOLO to locate them:
+
+| User Says | Gemini Interprets | Robot Action |
+|-----------|-------------------|--------------|
+| "pick large red cube" | `{"action": "pick_object", "parameters": {"size": "large", "color": "red", "type": "cube"}}` | Find & pick matching object |
+| "pick small blue cylinder" | `{"action": "pick_object", "parameters": {"size": "small", "color": "blue", "type": "cylinder"}}` | Find & pick matching object |
+| "pick green cube" | `{"action": "pick_object", "parameters": {"size": "medium", "color": "green", "type": "cube"}}` | Find & pick (default size) |
+
+#### 3. Position Commands
+Gemini handles preset position commands:
+
+| User Says | Gemini Interprets | Robot Action |
+|-----------|-------------------|--------------|
+| "go home" | `{"action": "home", "parameters": {}}` | All joints to [0, 0, 0, 0] radians |
+| "go to ready" | `{"action": "ready", "parameters": {}}` | Joints to [0, 0.5, -1.0, 0] radians |
+
+#### 4. Place Object Commands
+Gemini interprets placement locations:
+
+| User Says | Gemini Interprets | Robot Action |
+|-----------|-------------------|--------------|
+| "place at 0.2 0.1 0.05" | `{"action": "place_object", "parameters": {"x": 0.2, "y": 0.1, "z": 0.05}}` | Move to position & release |
+
+### Gemini Desktop Commander GUI
+
+The system includes a desktop GUI (`GeminiDesktopCommander`) that provides:
+
+1. **Text Entry Field**: Type natural language commands
+2. **Voice Button**: Click to speak commands (uses microphone)
+3. **End Effector Selection**: Choose between gripper or suction cup
+4. **Status Display**: Shows current processing state
+5. **Response History**: Logs all commands and responses
+
+### API Configuration
+
+The Gemini API is configured in `cloud_llm_controller.py`:
+
+```python
+# API Configuration
+self.api_url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+self.model = "gemini-2.0-flash"
+
+# Retry logic with exponential backoff for rate limiting (429 errors)
+max_retries = 3
+```
+
+### Error Handling
+
+The system handles various API scenarios:
+- **Rate Limiting (429)**: Automatic retry with exponential backoff
+- **Invalid JSON Response**: Logs error and returns None
+- **Network Errors**: Catches and logs request exceptions
+- **Unknown Commands**: Falls back to "Could not understand command"
+
+### Natural Language Understanding Examples
+
+Gemini can understand various phrasings:
+
+```
+✅ "move the robot to the left side"     → move left
+✅ "can you go up a little bit?"         → move up
+✅ "pick up the red block"               → pick red cube
+✅ "return to starting position"         → go home
+✅ "grab that blue sphere"               → pick blue sphere
+✅ "put it down at position x y z"       → place object
 ```
 
 ## 🤖 System Components
