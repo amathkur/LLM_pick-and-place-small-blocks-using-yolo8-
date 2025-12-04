@@ -1,0 +1,15 @@
+torch>=1.9.0
+torchvision>=0.10.0
+opencv-python>=4.5.0
+numpy>=1.21.0
+pillow>=8.0.0
+pyyaml>=5.1
+tqdm>=4.41.0
+matplotlib>=3.2.2
+seaborn>=0.11.0
+pandas>=1.1.4
+requests>=2.23.0
+scipy>=1.4.1
+thop>=0.1.1
+pydobot>=0.0.1
+pydobot2>=0.0.1

@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<robot
+  name="magician_description">
+  <link name="base_footprint">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="10.0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+  </link>
+  <joint
+    name="base_to_base_link"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="1.571 0 0" />
+    <parent
+      link="base_footprint" />
+    <child
+      link="base_link" />
+  </joint>
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.020063 -6.2161E-05 -0.087986"
+        rpy="0 0 0" />
+      <mass
+        value="0.30578" />
+      <inertia
+        ixx="0.00071053"
+        ixy="9.9243E-07"
+        ixz="-2.4854E-07"
+        iyy="0.00073873"
+        iyz="-2.4877E-06"
+        izz="0.0013851" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 -0.152 0"
+        rpy="0 0 0" />
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.58431 0.56471 0.54902 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="shoulder">
+    <inertial>
+      <origin
+        xyz="-0.024675 8.1407E-05 0.01482"
+        rpy="0 0 0" />
+      <mass
+        value="0.2307" />
+      <inertia
+        ixx="0.00032472"
+        ixy="-1.3752E-06"
+        ixz="-6.0519E-06"
+        iyy="0.00044936"
+        iyz="3.4523E-08"
+        izz="0.00065634" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 0.9451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint1"
+    type="revolute">
+    <origin
+      xyz="-0.02 0 -0.02"
+      rpy="1.5708 1.5708 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="shoulder" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="100"
+      velocity="1.0" />
+  </joint>
+  
+  <link
+    name="elbow">
+    <inertial>
+      <origin
+        xyz="-0.015439 0.00011014 0.07257"
+        rpy="0 0 0" />
+      <mass
+        value="0.075701" />
+      <inertia
+        ixx="0.00016334"
+        ixy="5.1098E-08"
+        ixz="-2.1519E-06"
+        iyy="0.00015321"
+        iyz="2.9412E-07"
+        izz="2.175E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.05"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.03" length="0.05"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint2"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="-3.1416 0 0" />
+    <parent
+      link="shoulder" />
+    <child
+      link="elbow" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="100"
+      velocity="1.0" />
+  </joint>
+  
+  <link
+    name="wrist">
+    <inertial>
+      <origin
+        xyz="0.054676 0.036747 0.1679"
+        rpy="0 0 0" />
+      <mass
+        value="0.079987" />
+      <inertia
+        ixx="1.7698E-05"
+        ixy="-1.2066E-08"
+        ixz="1.3665E-06"
+        iyy="0.00016288"
+        iyz="-6.1383E-08"
+        izz="0.00015897" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0.02 -0.035 -0.18"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.02" length="0.04"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.66667 0.66667 0.6549 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.02" length="0.04"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint3"
+    type="revolute">
+    <origin
+      xyz="-0.025 0 0.17"
+      rpy="0 0 0" />
+    <parent
+      link="elbow" />
+    <child
+      link="wrist" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="100"
+      velocity="1.0" />
+  </joint>
+  
+  <link
+    name="wrist_pitch">
+    <inertial>
+      <origin
+        xyz="0.19217 -8.6001E-05 0.15972"
+        rpy="0 0 0" />
+      <mass
+        value="0.038525" />
+      <inertia
+        ixx="5.9393E-06"
+        ixy="2.2172E-08"
+        ixz="-1.3561E-06"
+        iyy="1.4378E-05"
+        iyz="-1.9867E-08"
+        izz="9.2862E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="-0.17 0 -0.18"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.015" length="0.03"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 0.9451 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.015" length="0.03"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint4"
+    type="revolute">
+    <origin
+      xyz="0.19 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="wrist" />
+    <child
+      link="wrist_pitch" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-3.14159"
+      upper="3.14159"
+      effort="100"
+      velocity="1.0" />
+  </joint>
+  
+  <link
+    name="gripper">
+    <inertial>
+      <origin
+        xyz="-0.0043651 1.1915E-10 -0.01292"
+        rpy="0 0 0" />
+      <mass
+        value="0.028937" />
+      <inertia
+        ixx="4.2325E-06"
+        ixy="-4.7385E-14"
+        ixz="5.6853E-10"
+        iyy="4.2309E-06"
+        iyz="6.1764E-14"
+        izz="1.0196E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <box size="0.02 0.02 0.02"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <box size="0.02 0.02 0.02"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint5"
+    type="prismatic">
+    <origin
+      xyz="0.054 0 -0.05"
+      rpy="0 0 0" />
+    <parent
+      link="wrist_pitch" />
+    <child
+      link="gripper" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="0"
+      upper="0.1"
+      effort="100"
+      velocity="0.5" />
+  </joint>
+  <gazebo>
+    <plugin filename="libignition-gazebo-joint-trajectory-controller-system.so" name="ignition::gazebo::systems::JointTrajectoryController">
+      <topic>/joint_trajectory</topic>
+      <joint_name>joint1</joint_name>
+      <joint_name>joint2</joint_name>
+      <joint_name>joint3</joint_name>
+      <joint_name>joint4</joint_name>
+      <joint_name>joint5</joint_name>
+    </plugin>
+  </gazebo>
+</robot>

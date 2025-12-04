@@ -1,0 +1,10 @@
+run llm 
+
+
+cd ~/dobot_rviz_ws && source /opt/ros/humble/setup.bash && source install/setup.bash && python3.10 cloud_llm_controller.py
+
+
+
+
+run launch 
+ cd ~/dobot_rviz_ws && source /opt/ros/humble/setup.bash && source install/setup.bash && ros2 launch launch/moveit_demo.launch.py 
